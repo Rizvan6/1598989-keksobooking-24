@@ -1,18 +1,30 @@
-const getRandomInteger = function (min, max) {
-  if (max - min <= 0 && max <= min) {
-    return 'Ошибка. Некорректный набор чисел!';
+/* eslint-disable no-console */
+function testMinMaxNumbers(min, max) {
+  return max - min <= 0 && max <= min;
+}
+
+
+function getRandomInteger(min, max) {
+  if (testMinMaxNumbers(min, max)) {
+    console.error('Ошибка ввода');
+
+    return;
   }
+
   return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+}
 
 getRandomInteger(20, 30);
 
 
-const getRandomIntegerFloat = function (min, max, SymbolsAfterComma) {
-  if (max - min <= 0 && max <= min) {
-    return 'Ошибка. Некорректный набор чисел!';
-  }
-  return (Math.floor(Math.random() * (max - min + 1)) + min).toFixed(SymbolsAfterComma);
-};
+function getRandomFloat(min, max, amountSymbolsAfterComma) {
+  if (testMinMaxNumbers(min, max)) {
+    console.error('Ошибка ввода');
 
-getRandomIntegerFloat(5.6973, 10.2365, 1);
+    return;
+  }
+
+  return ((Math.random() * (max - min + 1)) + min).toFixed(amountSymbolsAfterComma);
+}
+
+getRandomFloat(5.697, 10.236, 1);
