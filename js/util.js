@@ -17,8 +17,7 @@ function getRandomArrayItem(array) {
 }
 
 function getArrayRandomLength(array) {
-  return array.slice(0, getRandomInteger(1, array.length - 1));
+  return array.slice(0, getRandomInteger(1, array.length));
 }
-
 
 export { getRandomInteger, getRandomFloat, getRandomArrayItem, getArrayRandomLength };
