@@ -1,23 +1,37 @@
 const adForm = document.querySelector('.ad-form');
-const adHeader = adForm.querySelector('.ad-form-header');
+const adHeaders = adForm.querySelectorAll('fieldset');
 const mapFiltersForm = document.querySelector('.map__filters');
 const mapFiltersElements = mapFiltersForm.children;
 
-
-function inactiveCondition() {
+function setInactiveCondition() {
   adForm.classList.add('ad-form--disabled');
-  adHeader.disabled = true;
+
+  for (let i = 0; i <= adHeaders.length - 1; i++) {
+    adHeaders[i].disabled = true;
+  }
+
   mapFiltersForm.classList.add('map__filters--disabled');
-  mapFiltersElements.disabled = true;
+
+  for (let i = 0; i <= mapFiltersElements.length - 1; i++) {
+    mapFiltersElements[i].disabled = true;
+  }
 }
 
-inactiveCondition();
+setInactiveCondition();
 
-function activeCondition() {
+function setActiveCondition() {
   adForm.classList.remove('ad-form--disabled');
-  adHeader.disabled = false;
+
+  for (let i = 0; i <= adHeaders.length - 1; i++) {
+    adHeaders[i].disabled = false;
+  }
+
   mapFiltersForm.classList.remove('map__filters--disabled');
-  mapFiltersElements.disabled = false;
+
+  for (let i = 0; i <= mapFiltersElements.length - 1; i++) {
+    mapFiltersElements[i].disabled = false;
+  }
 }
 
-activeCondition();
+setActiveCondition();
+
