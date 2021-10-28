@@ -50,8 +50,8 @@ function generateFeutureItems(features, container) {
 
   features.forEach((feature) => {
     const featureItem = document.createElement('li');
-    featureItem.classList.add('popup__feature');
-    featureItem.classList.add(`popup__feature--${feature}`);
+
+    featureItem.className = `popup__feature popup__feature--${feature}`;
 
     fragmentForItems.append(featureItem);
   });
