@@ -1,7 +1,15 @@
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
+const adFormTitleInput = adForm.querySelector('#title');
+const adFormPriceInput = adForm.querySelector('#price');
+const adFormRoomsSelect = adForm.querySelector('#room_number');
+const adFormCapacitySelect = adForm.querySelector('#capacity');
+const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
 const mapFiltersForm = document.querySelector('.map__filters');
 const mapFiltersFormChildren = mapFiltersForm.children;
+const MIN_TITLE_LENGTH = 30;
+const MAX_TITLE_LENGTH = 100;
+const MAX_PRICE_VALUE = 1000000;
 
 function setInactiveCondition() {
   adForm.classList.add('ad-form--disabled');
@@ -35,3 +43,69 @@ function setActiveCondition() {
 
 setActiveCondition();
 
+function showErrorForTitle() {
+  if (adFormTitleInput.validity.valueMissing) {
+    adFormTitleInput.setCustomValidity('Введите заголовок объявления.');
+  } else if (adFormTitleInput.value.length < MIN_TITLE_LENGTH) {
+    adFormTitleInput.setCustomValidity(`Введите еще ${MIN_TITLE_LENGTH - adFormTitleInput.value.length} симв.`);
+  } else if (adFormTitleInput.value.length > MAX_TITLE_LENGTH) {
+    adFormTitleInput.setCustomValidity(`Удалите лишние ${adFormTitleInput.value.length - MAX_TITLE_LENGTH} симв.`);
+  } else {
+    adFormTitleInput.setCustomValidity('');
+  }
+
+  adFormTitleInput.reportValidity();
+}
+
+adFormTitleInput.addEventListener('input', showErrorForTitle);
+
+function showErrorForPrice() {
+  if (adFormPriceInput.validity.valueMissing) {
+    adFormPriceInput.setCustomValidity('Вы должны ввести цену за ночь.');
+  } else if (adFormPriceInput.value.length > MAX_PRICE_VALUE) {
+    adFormPriceInput.setCustomValidity(`Значение должно быть меньше или равно ${MAX_PRICE_VALUE}`);
+  } else {
+    adFormPriceInput.setCustomValidity('');
+  }
+
+  adFormPriceInput.reportValidity();
+}
+
+adFormPriceInput.addEventListener('input', showErrorForPrice);
+
+
+function getOverlapOfGuests(evt) {
+  const currentValue = evt.target.value;
+
+  for (let index = 0; index <= adFormCapacityOptions.length - 1; index++) {
+    if (adFormCapacityOptions[index].value === '100' && adFormCapacityOptions[index].value === currentValue) {
+      adFormCapacityOptions[index].disabled = false;
+      adFormCapacityOptions[index].selected = true;
+      adFormCapacityOptions[2].disabled = true;
+
+    } else if (adFormCapacityOptions[index].value !== '100') {
+      if (adFormCapacityOptions[index].value === currentValue || adFormCapacityOptions[index].value < currentValue) {
+        adFormCapacityOptions[index].disabled = false;
+        adFormCapacityOptions[index].selected = true;
+      } else {
+        adFormCapacityOptions[index].disabled = true;
+      }
+    }
+    else {
+      adFormCapacityOptions[index].disabled = true;
+    }
+  }
+}
+
+adFormRoomsSelect.addEventListener('change', getOverlapOfGuests);
+
+
+adForm.addEventListener('submit', (evt) => {
+  if (!adFormTitleInput.validity.valid) {
+    showErrorForTitle();
+    evt.preventDefault();
+  } else if (!adFormPriceInput.validity.valid) {
+    showErrorForPrice();
+    evt.preventDefault();
+  }
+});
