@@ -3,6 +3,7 @@ const adFormFieldsets = adForm.querySelectorAll('fieldset');
 const adFormTitleInput = adForm.querySelector('#title');
 const adFormPriceInput = adForm.querySelector('#price');
 const adFormRoomsSelect = adForm.querySelector('#room_number');
+const adFormRoomsOptions = adFormRoomsSelect.querySelectorAll('option');
 const adFormCapacitySelect = adForm.querySelector('#capacity');
 const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
 const mapFiltersForm = document.querySelector('.map__filters');
@@ -61,7 +62,6 @@ function showErrorForTitle() {
   adFormTitleInput.reportValidity('');
 }
 
-adFormTitleInput.addEventListener('input', showErrorForTitle);
 adFormTitleInput.addEventListener('blur', showErrorForTitle);
 
 function showErrorForPrice() {
@@ -79,9 +79,9 @@ function showErrorForPrice() {
   adFormPriceInput.reportValidity('');
 }
 
-adFormPriceInput.addEventListener('input', showErrorForPrice);
 adFormPriceInput.addEventListener('blur', showErrorForPrice);
 
+/*
 function getOverlapOfGuests(evt) {
   const currentValue = evt.target.value;
 
@@ -106,13 +106,43 @@ function getOverlapOfGuests(evt) {
 }
 
 adFormRoomsSelect.addEventListener('change', getOverlapOfGuests);
+*/
+
+function getOverlapOfGuests() {
+  const arrayGuests = ['для 1 гостя', 'для 2 гостей', 'для 3 гостей', 'не для гостей'];
+
+  for (let index = 0; index <= adFormRoomsOptions.length; index++) {
+    const roomsCount = adFormRoomsOptions[index].dataset.roomsCount;
+
+    switch (roomsCount) {
+      case '1':
+        return arrayGuests.slice(0, 1);
+      case '2':
+        return arrayGuests.slice(0, 2);
+      case '3':
+        return arrayGuests.slice(0, 3);
+      case '100':
+        return arrayGuests.slice(3, 1);
+    }
+  }
+
+  adFormCapacityOptions.forEach((adFormCapacityOption) => {
+    const isNecessary = arrayGuests.some((arrayGuest) => adFormCapacityOption.textContent = arrayGuest);
+
+    if (!isNecessary) {
+      adFormCapacityOption.remove();
+    }
+  });
+}
+
+adFormRoomsSelect.addEventListener('change', getOverlapOfGuests);
 
 adForm.addEventListener('submit', (evt) => {
   if (!adFormTitleInput.validity.valid) {
+    evt.preventDefault();
     adFormTitleInput.addEventListener('invalid', showErrorForPrice);
-    evt.preventDefault();
   } else if (!adFormPriceInput.validity.valid) {
-    adFormPriceInput.addEventListener('invalid', showErrorForPrice);
     evt.preventDefault();
+    adFormPriceInput.addEventListener('invalid', showErrorForPrice);
   }
 });
