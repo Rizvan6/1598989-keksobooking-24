@@ -46,33 +46,41 @@ setActiveCondition();
 function showErrorForTitle() {
   if (adFormTitleInput.validity.valueMissing) {
     adFormTitleInput.setCustomValidity('Введите заголовок объявления.');
+    adFormTitleInput.style.borderColor = 'red';
   } else if (adFormTitleInput.value.length < MIN_TITLE_LENGTH) {
     adFormTitleInput.setCustomValidity(`Введите еще ${MIN_TITLE_LENGTH - adFormTitleInput.value.length} симв.`);
+    adFormTitleInput.style.borderColor = 'red';
   } else if (adFormTitleInput.value.length > MAX_TITLE_LENGTH) {
     adFormTitleInput.setCustomValidity(`Удалите лишние ${adFormTitleInput.value.length - MAX_TITLE_LENGTH} симв.`);
+    adFormTitleInput.style.borderColor = 'red';
   } else {
     adFormTitleInput.setCustomValidity('');
+    adFormTitleInput.style.borderColor = '';
   }
 
-  adFormTitleInput.reportValidity();
+  adFormTitleInput.reportValidity('');
 }
 
 adFormTitleInput.addEventListener('input', showErrorForTitle);
+adFormTitleInput.addEventListener('blur', showErrorForTitle);
 
 function showErrorForPrice() {
   if (adFormPriceInput.validity.valueMissing) {
     adFormPriceInput.setCustomValidity('Вы должны ввести цену за ночь.');
+    adFormPriceInput.style.borderColor = 'red';
   } else if (adFormPriceInput.value.length > MAX_PRICE_VALUE) {
     adFormPriceInput.setCustomValidity(`Значение должно быть меньше или равно ${MAX_PRICE_VALUE}`);
+    adFormPriceInput.style.borderColor = 'red';
   } else {
     adFormPriceInput.setCustomValidity('');
+    adFormPriceInput.style.borderColor = '';
   }
 
-  adFormPriceInput.reportValidity();
+  adFormPriceInput.reportValidity('');
 }
 
 adFormPriceInput.addEventListener('input', showErrorForPrice);
-
+adFormPriceInput.addEventListener('blur', showErrorForPrice);
 
 function getOverlapOfGuests(evt) {
   const currentValue = evt.target.value;
@@ -99,13 +107,12 @@ function getOverlapOfGuests(evt) {
 
 adFormRoomsSelect.addEventListener('change', getOverlapOfGuests);
 
-
 adForm.addEventListener('submit', (evt) => {
   if (!adFormTitleInput.validity.valid) {
-    showErrorForTitle();
+    adFormTitleInput.addEventListener('invalid', showErrorForPrice);
     evt.preventDefault();
   } else if (!adFormPriceInput.validity.valid) {
-    showErrorForPrice();
+    adFormPriceInput.addEventListener('invalid', showErrorForPrice);
     evt.preventDefault();
   }
 });
