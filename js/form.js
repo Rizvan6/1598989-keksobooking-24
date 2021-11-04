@@ -33,6 +33,14 @@ const ARRAY_GUESTS = [
   },
 ];
 
+const OBJ_ACCOMODATION_PRICES = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
 function resetFormElements(elements) {
   elements.forEach((element) => {
     if (!element.selected) {
@@ -119,34 +127,34 @@ function checkErrorPrice() {
 
 adFormPriceInput.addEventListener('blur', checkErrorPrice);
 
-function getMinPrice(evt) {
+function getMinPrice(accomodation) {
+  adFormPriceInput.min = OBJ_ACCOMODATION_PRICES[accomodation];
+  adFormPriceInput.placeholder = OBJ_ACCOMODATION_PRICES[accomodation];
+}
+
+function getAppropriateMinPrice(evt) {
   const typeAccomodation = evt.target.value;
 
   switch (typeAccomodation) {
     case 'bungalow':
-      adFormPriceInput.placeholder = '0';
-      adFormPriceInput.min = '0';
+      getMinPrice(typeAccomodation);
       break;
     case 'flat':
-      adFormPriceInput.placeholder = '1000';
-      adFormPriceInput.min = '1000';
+      getMinPrice(typeAccomodation);
       break;
     case 'hotel':
-      adFormPriceInput.placeholder = '3000';
-      adFormPriceInput.min = '3000';
+      getMinPrice(typeAccomodation);
       break;
     case 'house':
-      adFormPriceInput.placeholder = '5000';
-      adFormPriceInput.min = '5000';
+      getMinPrice(typeAccomodation);
       break;
     case 'palace':
-      adFormPriceInput.placeholder = '10000';
-      adFormPriceInput.min = '10000';
+      getMinPrice(typeAccomodation);
       break;
   }
 }
 
-adFormTypeSelect.addEventListener('change', getMinPrice);
+adFormTypeSelect.addEventListener('change', getAppropriateMinPrice);
 
 adFormTimeFieldset.addEventListener('change', (evt) => {
   adFormTimeinSelect.value = evt.target.value;
@@ -178,7 +186,7 @@ function generateGuests(guests) {
   return fragmentGuests;
 }
 
-function getOverlapGuests(evt) {
+function getAppropriateGuests(evt) {
   const roomsCount = evt.target.value;
   let guests = [];
 
@@ -202,7 +210,7 @@ function getOverlapGuests(evt) {
   adFormCapacitySelect.appendChild(generateGuests(guests));
 }
 
-adFormRoomsSelect.addEventListener('change', getOverlapGuests);
+adFormRoomsSelect.addEventListener('change', getAppropriateGuests);
 
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
