@@ -5,6 +5,10 @@ const adFormPriceInput = adForm.querySelector('#price');
 const adFormRoomsSelect = adForm.querySelector('#room_number');
 const adFormCapacitySelect = adForm.querySelector('#capacity');
 const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
+const adFormTypeSelect = adForm.querySelector('#type');
+const adFormTimeFieldset = adForm.querySelector('.ad-form__element--time');
+const adFormTimeinSelect = adForm.querySelector('#timein');
+const adFormTimeoutSelect = adForm.querySelector('#timeout');
 const mapFiltersForm = document.querySelector('.map__filters');
 const mapFiltersFormChildren = mapFiltersForm.children;
 const MIN_TITLE_LENGTH = 30;
@@ -28,6 +32,24 @@ const ARRAY_GUESTS = [
     value: '100',
   },
 ];
+
+const OBJ_ACCOMODATION_PRICES = {
+  bungalow: 0,
+  flat: 1000,
+  hotel: 3000,
+  house: 5000,
+  palace: 10000,
+};
+
+function resetFormElements(elements) {
+  elements.forEach((element) => {
+    if (!element.selected) {
+      return element.remove();
+    } else {
+      return element;
+    }
+  });
+}
 
 function setInactiveCondition() {
   adForm.classList.add('ad-form--disabled');
@@ -61,17 +83,15 @@ function setActiveCondition() {
 
 setActiveCondition();
 
-
-function showError(variable, text) {
-  variable.setCustomValidity(text);
-  variable.style.borderColor = 'red';
+function showError(input, text) {
+  input.setCustomValidity(text);
+  input.style.borderColor = 'red';
 }
 
-function doReset(variable) {
-  variable.setCustomValidity('');
-  variable.style.borderColor = '';
+function resetError(input) {
+  input.setCustomValidity('');
+  input.style.borderColor = '';
 }
-
 
 function checkErrorTitle() {
   if (adFormTitleInput.validity.valueMissing) {
@@ -81,7 +101,7 @@ function checkErrorTitle() {
   } else if (adFormTitleInput.value.length > MAX_TITLE_LENGTH) {
     showError(adFormTitleInput, `Удалите лишние ${adFormTitleInput.value.length - MAX_TITLE_LENGTH} симв.`);
   } else {
-    doReset(adFormTitleInput);
+    resetError(adFormTitleInput);
   }
 
   adFormTitleInput.reportValidity('');
@@ -94,8 +114,12 @@ function checkErrorPrice() {
     showError(adFormPriceInput, 'Вы должны ввести цену за ночь.');
   } else if (adFormPriceInput.value.length > MAX_PRICE_VALUE) {
     showError(adFormPriceInput, `Значение должно быть меньше или равно ${MAX_PRICE_VALUE}`);
-  } else {
-    doReset(adFormPriceInput);
+  }
+  else if (adFormPriceInput.value.rangeUnderflow) {
+    showError(adFormPriceInput, `минимальное значение должно быть ${adFormPriceInput.min}`);
+  }
+  else {
+    resetError(adFormPriceInput);
   }
 
   adFormPriceInput.reportValidity('');
@@ -103,14 +127,41 @@ function checkErrorPrice() {
 
 adFormPriceInput.addEventListener('blur', checkErrorPrice);
 
+function getMinPrice(accomodation) {
+  adFormPriceInput.min = OBJ_ACCOMODATION_PRICES[accomodation];
+  adFormPriceInput.placeholder = OBJ_ACCOMODATION_PRICES[accomodation];
+}
 
-adFormCapacityOptions.forEach((adFormCapacityOption) => {
-  if (!adFormCapacityOption.selected) {
-    return adFormCapacityOption.remove();
-  } else {
-    return adFormCapacityOption;
+function getAppropriateMinPrice(evt) {
+  const typeAccomodation = evt.target.value;
+
+  switch (typeAccomodation) {
+    case 'bungalow':
+      getMinPrice(typeAccomodation);
+      break;
+    case 'flat':
+      getMinPrice(typeAccomodation);
+      break;
+    case 'hotel':
+      getMinPrice(typeAccomodation);
+      break;
+    case 'house':
+      getMinPrice(typeAccomodation);
+      break;
+    case 'palace':
+      getMinPrice(typeAccomodation);
+      break;
   }
+}
+
+adFormTypeSelect.addEventListener('change', getAppropriateMinPrice);
+
+adFormTimeFieldset.addEventListener('change', (evt) => {
+  adFormTimeinSelect.value = evt.target.value;
+  adFormTimeoutSelect.value = evt.target.value;
 });
+
+resetFormElements(adFormCapacityOptions);
 
 function deleteGuests() {
   adFormCapacitySelect.options.length = 0;
@@ -135,7 +186,7 @@ function generateGuests(guests) {
   return fragmentGuests;
 }
 
-function getOverlapOfGuests(evt) {
+function getAppropriateGuests(evt) {
   const roomsCount = evt.target.value;
   let guests = [];
 
@@ -159,7 +210,7 @@ function getOverlapOfGuests(evt) {
   adFormCapacitySelect.appendChild(generateGuests(guests));
 }
 
-adFormRoomsSelect.addEventListener('change', getOverlapOfGuests);
+adFormRoomsSelect.addEventListener('change', getAppropriateGuests);
 
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
