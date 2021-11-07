@@ -2,6 +2,7 @@ const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
 const adFormTitleInput = adForm.querySelector('#title');
 const adFormPriceInput = adForm.querySelector('#price');
+const adFormAddressInput = adForm.querySelector('#address');
 const adFormRoomsSelect = adForm.querySelector('#room_number');
 const adFormCapacitySelect = adForm.querySelector('#capacity');
 const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
@@ -33,13 +34,7 @@ const ARRAY_GUESTS = [
   },
 ];
 
-const OBJ_ACCOMODATION_PRICES = {
-  bungalow: 0,
-  flat: 1000,
-  hotel: 3000,
-  house: 5000,
-  palace: 10000,
-};
+const OBJ_ACCOMODATION_PRICES = { bungalow: 0, flat: 1000, hotel: 3000, house: 5000, palace: 10000 };
 
 function resetFormElements(elements) {
   elements.forEach((element) => {
@@ -65,8 +60,6 @@ function setInactiveCondition() {
   }
 }
 
-setInactiveCondition();
-
 function setActiveCondition() {
   adForm.classList.remove('ad-form--disabled');
 
@@ -80,8 +73,6 @@ function setActiveCondition() {
     mapFiltersFormChildren[i].disabled = false;
   }
 }
-
-setActiveCondition();
 
 function showError(input, text) {
   input.setCustomValidity(text);
@@ -127,7 +118,7 @@ function checkErrorPrice() {
 
 adFormPriceInput.addEventListener('blur', checkErrorPrice);
 
-function getMinPrice(accomodation) {
+function setMinPrice(accomodation) {
   adFormPriceInput.min = OBJ_ACCOMODATION_PRICES[accomodation];
   adFormPriceInput.placeholder = OBJ_ACCOMODATION_PRICES[accomodation];
 }
@@ -137,19 +128,19 @@ function getAppropriateMinPrice(evt) {
 
   switch (typeAccomodation) {
     case 'bungalow':
-      getMinPrice(typeAccomodation);
+      setMinPrice(typeAccomodation);
       break;
     case 'flat':
-      getMinPrice(typeAccomodation);
+      setMinPrice(typeAccomodation);
       break;
     case 'hotel':
-      getMinPrice(typeAccomodation);
+      setMinPrice(typeAccomodation);
       break;
     case 'house':
-      getMinPrice(typeAccomodation);
+      setMinPrice(typeAccomodation);
       break;
     case 'palace':
-      getMinPrice(typeAccomodation);
+      setMinPrice(typeAccomodation);
       break;
   }
 }
@@ -220,3 +211,5 @@ adForm.addEventListener('submit', (evt) => {
     adFormPriceInput.addEventListener('invalid', checkErrorPrice);
   }
 });
+
+export { setInactiveCondition, setActiveCondition, adFormAddressInput };

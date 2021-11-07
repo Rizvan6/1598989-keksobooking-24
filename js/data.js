@@ -12,7 +12,6 @@ const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/claire-rendall-b6kAwr1i0Iw.jpg',
 ];
 
-
 function generateAvatarUrl(index) {
   return `img/avatars/user${index}.png`;
 }
@@ -51,7 +50,5 @@ function generateOffers(amount) {
   }
   return arrayOffers;
 }
-
-generateOffers(1);
 
 export { generateOffers };
