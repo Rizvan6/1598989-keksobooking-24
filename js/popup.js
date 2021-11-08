@@ -77,4 +77,35 @@ function generatePhotos(photos, container) {
   container.append(fragmentForPhotos);
 }
 
-export { popupCard, popupOffers, getAccommodation, generateCapacity, generatePrice, generateTime, generateFeutureItems, generatePhotos };
+function generatePopupCard(popupOffer) {
+  const popupElements = popupCard.cloneNode(true);
+  const popupAvatar = popupElements.querySelector('.popup__avatar');
+  const popupTitle = popupElements.querySelector('.popup__title');
+  const popupAddress = popupElements.querySelector('.popup__text--address');
+  const popupPrice = popupElements.querySelector('.popup__text--price');
+  const popupType = popupElements.querySelector('.popup__type');
+  const popupCapacity = popupElements.querySelector('.popup__text--capacity');
+  const popupTime = popupElements.querySelector('.popup__text--time');
+  const popupDescription = popupElements.querySelector('.popup__description');
+  const popupFeaturesContainer = popupElements.querySelector('.popup__features');
+  const features = popupOffer.offer.features;
+  const popupPhotosContainer = popupElements.querySelector('.popup__photos');
+  const photos = popupOffer.offer.photos;
+
+  popupAvatar.src = popupOffer.author.avatar || '';
+  popupTitle.textContent = popupOffer.offer.title || '';
+  popupAddress.textContent = Object.values(popupOffer.offer.address).join(', ') || '';
+  popupPrice.textContent = generatePrice(popupOffer.offer.price);
+  popupType.textContent = getAccommodation(popupOffer.offer.type);
+  popupCapacity.textContent = generateCapacity(popupOffer.offer.rooms, popupOffer.offer.guests);
+  popupTime.textContent = generateTime(popupOffer.offer.checkin, popupOffer.offer.checkout);
+  popupDescription.textContent = popupOffer.offer.description || '';
+
+  generateFeutureItems(features, popupFeaturesContainer);
+
+  generatePhotos(photos, popupPhotosContainer);
+
+  return popupElements;
+}
+
+export { popupOffers, generatePopupCard };

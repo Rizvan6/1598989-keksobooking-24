@@ -1,5 +1,5 @@
 import { setInactiveCondition, setActiveCondition, adFormAddressInput } from './form.js';
-import { popupCard, popupOffers, getAccommodation, generateCapacity, generatePrice, generateTime, generateFeutureItems, generatePhotos } from './popup.js';
+import { popupOffers, generatePopupCard } from './popup.js';
 
 setInactiveCondition();
 
@@ -34,16 +34,15 @@ const marker = L.marker({
 adFormAddressInput.value = Object.values(marker._latlng).join(', ');
 
 marker.on('moveend', (evt) => {
-  const userMove = evt.target.getLatLng();
-  const coordinates = Object.values(userMove);
-  const fixedCoordiantes = coordinates.map((coordinate) => coordinate.toFixed(5));
+  const userMovedCoordinates = evt.target.getLatLng();
+  const coordinatesValues = Object.values(userMovedCoordinates);
+  const fixedCoordiantes = coordinatesValues.map((coordinateValue) => coordinateValue.toFixed(5));
 
   adFormAddressInput.value = fixedCoordiantes;
 });
 
 popupOffers.forEach((popupOffer) => {
   const regularPoint = {
-    title: popupOffer.popupTitle,
     lat: +Object.values(popupOffer.location)[0],
     lng: +Object.values(popupOffer.location)[1],
   };
@@ -61,33 +60,6 @@ popupOffers.forEach((popupOffer) => {
     icon: regularMarkerIcon,
   });
 
-  const popupElements = popupCard.cloneNode(true);
-  const popupAvatar = popupElements.querySelector('.popup__avatar');
-  const popupTitle = popupElements.querySelector('.popup__title');
-  const popupAddress = popupElements.querySelector('.popup__text--address');
-  const popupPrice = popupElements.querySelector('.popup__text--price');
-  const popupType = popupElements.querySelector('.popup__type');
-  const popupCapacity = popupElements.querySelector('.popup__text--capacity');
-  const popupTime = popupElements.querySelector('.popup__text--time');
-  const popupDescription = popupElements.querySelector('.popup__description');
-  const popupFeaturesContainer = popupElements.querySelector('.popup__features');
-  const features = popupOffer.offer.features;
-  const popupPhotosContainer = popupElements.querySelector('.popup__photos');
-  const photos = popupOffer.offer.photos;
-
-  popupAvatar.src = popupOffer.author.avatar || '';
-  popupTitle.textContent = popupOffer.offer.title || '';
-  popupAddress.textContent = Object.values(popupOffer.offer.address).join(', ') || '';
-  popupPrice.textContent = generatePrice(popupOffer.offer.price);
-  popupType.textContent = getAccommodation(popupOffer.offer.type);
-  popupCapacity.textContent = generateCapacity(popupOffer.offer.rooms, popupOffer.offer.guests);
-  popupTime.textContent = generateTime(popupOffer.offer.checkin, popupOffer.offer.checkout);
-  popupDescription.textContent = popupOffer.offer.description || '';
-
-  generateFeutureItems(features, popupFeaturesContainer);
-
-  generatePhotos(photos, popupPhotosContainer);
-
-  regularMarker.addTo(map).bindPopup(popupElements);
+  regularMarker.addTo(map).bindPopup(generatePopupCard(popupOffer));
 });
 
