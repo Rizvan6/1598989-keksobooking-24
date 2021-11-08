@@ -1,8 +1,7 @@
 import { generateOffers } from './data.js';
 
 const popupCard = document.querySelector('#card').content.querySelector('.popup');
-const mapCanvas = document.querySelector('#map-canvas');
-const popupOffers = generateOffers(1);
+const popupOffers = generateOffers(3);
 
 function getAccommodation(accommodation) {
   switch (accommodation) {
@@ -78,7 +77,7 @@ function generatePhotos(photos, container) {
   container.append(fragmentForPhotos);
 }
 
-popupOffers.forEach((popupOffer) => {
+function generatePopupCard(popupOffer) {
   const popupElements = popupCard.cloneNode(true);
   const popupAvatar = popupElements.querySelector('.popup__avatar');
   const popupTitle = popupElements.querySelector('.popup__title');
@@ -106,5 +105,7 @@ popupOffers.forEach((popupOffer) => {
 
   generatePhotos(photos, popupPhotosContainer);
 
-  mapCanvas.append(popupElements);
-});
+  return popupElements;
+}
+
+export { popupOffers, generatePopupCard };
