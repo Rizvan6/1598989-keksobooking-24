@@ -1,23 +1,59 @@
-function getRandomInteger(min, max) {
-  const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
-  const upper = Math.floor(Math.max(Math.abs(min), Math.abs(max)));
-
-  return Math.floor(Math.random() * (upper - lower + 1) + lower);
+function isEscapeKey(evt) {
+  return evt.key === 'Escape';
 }
 
-function getRandomFloat(min, max, amountSymbolsAfterComma = 2) {
-  const lower = Math.min(Math.abs(min), Math.abs(max));
-  const upper = Math.max(Math.abs(min), Math.abs(max));
-
-  return (Math.random() * (upper - lower) + lower).toFixed(amountSymbolsAfterComma);
+function isEnterKey(evt) {
+  return evt.key === 'Enter';
 }
 
-function getRandomArrayItem(array) {
-  return array[getRandomInteger(0, array.length - 1)];
+function closeMessage(message) {
+  message.remove();
 }
 
-function getArrayRandomLength(array) {
-  return array.slice(0, getRandomInteger(1, array.length));
+function showMessageSuccess() {
+  const success = document.querySelector('#success').content.querySelector('.success');
+  const successClone = success.cloneNode(true);
+
+  document.body.append(successClone);
+
+  window.addEventListener('click', () => {
+    closeMessage(successClone);
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      closeMessage(successClone);
+    }
+  });
 }
 
-export { getRandomInteger, getRandomFloat, getRandomArrayItem, getArrayRandomLength };
+function showMessageError() {
+  const error = document.querySelector('#error').content.querySelector('.error');
+  const errorButton = document.querySelector('.error__button');
+  const errorClone = error.cloneNode(true);
+
+  document.body.append(errorClone);
+
+  errorButton.addEventListener('click', () => {
+    closeMessage(errorClone);
+  });
+
+  errorButton.addEventListener('keydown', (evt) => {
+    if (isEnterKey(evt)) {
+      closeMessage(errorClone);
+    }
+  });
+
+  window.addEventListener('click', () => {
+    closeMessage(errorClone);
+  });
+
+  window.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      closeMessage(errorClone);
+    }
+  });
+}
+
+
+export { showMessageSuccess, showMessageError };

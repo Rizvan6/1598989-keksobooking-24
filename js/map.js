@@ -1,11 +1,17 @@
 import { setInactiveCondition, setActiveCondition, adFormAddressInput } from './form.js';
-import { popupOffers, generatePopupCard } from './popup.js';
+import { generatePopupCard } from './popup.js';
+// import { getData } from './api.js';
+
+let OFFERS = [];
+const POPUP_CARDS_COUNT = 10;
 
 setInactiveCondition();
 
 const map = L.map('map')
-  .on('load', () => {
+  .on('load', async () => {
     setActiveCondition();
+    await fetchOffers();
+    setPoints();
   })
   .setView({
     lat: 35.68950,
@@ -41,10 +47,20 @@ marker.on('moveend', (evt) => {
   adFormAddressInput.value = fixedCoordiantes;
 });
 
-popupOffers.forEach((popupOffer) => {
+async function fetchOffers() {
+  await fetch('https://24.javascript.pages.academy/keksobooking/data')
+    .then((response) => response.json())
+    .then((cards) => {
+      OFFERS = cards.slice(0, POPUP_CARDS_COUNT);
+    });
+
+  // await getData(OFFERS, POPUP_CARDS_COUNT);
+}
+
+function addMarker(offer) {
   const regularPoint = {
-    lat: +Object.values(popupOffer.location)[0],
-    lng: +Object.values(popupOffer.location)[1],
+    lat: offer.location.lat,
+    lng: offer.location.lng,
   };
 
   const regularMarkerIcon = L.icon({
@@ -60,6 +76,13 @@ popupOffers.forEach((popupOffer) => {
     icon: regularMarkerIcon,
   });
 
-  regularMarker.addTo(map).bindPopup(generatePopupCard(popupOffer));
-});
+  regularMarker.addTo(map).bindPopup(generatePopupCard(offer));
+}
 
+function setPoints() {
+  OFFERS.forEach((offer) => {
+    addMarker(offer);
+  });
+}
+
+export { marker };
