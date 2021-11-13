@@ -1,8 +1,8 @@
-function getData(data) {
+function getData(data, count) {
   fetch('https://24.javascript.pages.academy/keksobooking/data')
     .then((response) => response.json())
     .then((cards) => {
-      data(cards);
+      data = cards.slice(0, count);
     });
 }
 
