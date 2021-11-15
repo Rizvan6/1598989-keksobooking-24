@@ -1,3 +1,7 @@
+import { marker } from './map.js';
+import { showMessageSuccess, showMessageError } from './user-modal.js';
+import { sendData } from './api.js';
+
 const adForm = document.querySelector('.ad-form');
 const adFormFieldsets = adForm.querySelectorAll('fieldset');
 const adFormTitleInput = adForm.querySelector('#title');
@@ -10,6 +14,7 @@ const adFormTypeSelect = adForm.querySelector('#type');
 const adFormTimeFieldset = adForm.querySelector('.ad-form__element--time');
 const adFormTimeinSelect = adForm.querySelector('#timein');
 const adFormTimeoutSelect = adForm.querySelector('#timeout');
+const adFormResetButton = adForm.querySelector('.ad-form__reset');
 const mapFiltersForm = document.querySelector('.map__filters');
 const mapFiltersFormChildren = mapFiltersForm.children;
 const MIN_TITLE_LENGTH = 30;
@@ -36,7 +41,7 @@ const ARRAY_GUESTS = [
 
 const OBJ_ACCOMODATION_PRICES = { bungalow: 0, flat: 1000, hotel: 3000, house: 5000, palace: 10000 };
 
-function resetFormElements(elements) {
+function resetElements(elements) {
   elements.forEach((element) => {
     if (!element.selected) {
       return element.remove();
@@ -44,6 +49,16 @@ function resetFormElements(elements) {
       return element;
     }
   });
+}
+
+function resetForm() {
+  mapFiltersForm.reset();
+  adForm.reset();
+  marker.setLatLng({
+    lat: 35.68950,
+    lng: 139.69171,
+  });
+  adFormAddressInput.value = Object.values(marker._latlng).join(', ');
 }
 
 function setInactiveCondition() {
@@ -152,7 +167,7 @@ adFormTimeFieldset.addEventListener('change', (evt) => {
   adFormTimeoutSelect.value = evt.target.value;
 });
 
-resetFormElements(adFormCapacityOptions);
+resetElements(adFormCapacityOptions);
 
 function deleteGuests() {
   adFormCapacitySelect.options.length = 0;
@@ -209,7 +224,17 @@ adForm.addEventListener('submit', (evt) => {
     adFormTitleInput.addEventListener('invalid', checkErrorTitle);
   } else if (!adFormPriceInput.validity.valid) {
     adFormPriceInput.addEventListener('invalid', checkErrorPrice);
+  } else {
+    const formData = new FormData(evt.target);
+
+    sendData(showMessageSuccess, showMessageError, resetForm, formData);
   }
+});
+
+adFormResetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+
+  resetForm();
 });
 
 export { setInactiveCondition, setActiveCondition, adFormAddressInput };

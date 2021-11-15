@@ -1,7 +1,4 @@
-import { generateOffers } from './data.js';
-
 const popupCard = document.querySelector('#card').content.querySelector('.popup');
-const popupOffers = generateOffers(3);
 
 function getAccommodation(accommodation) {
   switch (accommodation) {
@@ -45,6 +42,12 @@ function generateTime(checkin, checkout) {
 }
 
 function generateFeutureItems(features, container) {
+  container.innerHTML = '';
+
+  if (!features) {
+    return;
+  }
+
   const fragmentForItems = document.createDocumentFragment();
 
   features.forEach((feature) => {
@@ -55,11 +58,16 @@ function generateFeutureItems(features, container) {
     fragmentForItems.append(featureItem);
   });
 
-  container.innerHTML = '';
   container.append(fragmentForItems);
 }
 
 function generatePhotos(photos, container) {
+  container.innerHTML = '';
+
+  if (!photos) {
+    return;
+  }
+
   const fragmentForPhotos = document.createDocumentFragment();
 
   photos.forEach((photo) => {
@@ -73,7 +81,6 @@ function generatePhotos(photos, container) {
     fragmentForPhotos.append(photoItem);
   });
 
-  container.innerHTML = '';
   container.append(fragmentForPhotos);
 }
 
@@ -94,7 +101,7 @@ function generatePopupCard(popupOffer) {
 
   popupAvatar.src = popupOffer.author.avatar || '';
   popupTitle.textContent = popupOffer.offer.title || '';
-  popupAddress.textContent = Object.values(popupOffer.offer.address).join(', ') || '';
+  popupAddress.textContent = Object.values(popupOffer.location).join(', ') || '';
   popupPrice.textContent = generatePrice(popupOffer.offer.price);
   popupType.textContent = getAccommodation(popupOffer.offer.type);
   popupCapacity.textContent = generateCapacity(popupOffer.offer.rooms, popupOffer.offer.guests);
@@ -108,4 +115,4 @@ function generatePopupCard(popupOffer) {
   return popupElements;
 }
 
-export { popupOffers, generatePopupCard };
+export { generatePopupCard };
