@@ -1,6 +1,6 @@
 import { setInactiveCondition, setActiveCondition, adFormAddressInput } from './form.js';
 import { generatePopupCard } from './popup.js';
-// import { getData } from './api.js';
+import { getData } from './api.js';
 
 let OFFERS = [];
 const POPUP_CARDS_COUNT = 10;
@@ -48,13 +48,9 @@ marker.on('moveend', (evt) => {
 });
 
 async function fetchOffers() {
-  await fetch('https://24.javascript.pages.academy/keksobooking/data')
-    .then((response) => response.json())
-    .then((cards) => {
-      OFFERS = cards.slice(0, POPUP_CARDS_COUNT);
-    });
+  const offers = await getData();
 
-  // await getData(OFFERS, POPUP_CARDS_COUNT);
+  OFFERS = offers.slice(0, POPUP_CARDS_COUNT);
 }
 
 function addMarker(offer) {

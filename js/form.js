@@ -1,5 +1,5 @@
 import { marker } from './map.js';
-import { showMessageSuccess, showMessageError } from './util.js';
+import { showMessageSuccess, showMessageError } from './user-modal.js';
 import { sendData } from './api.js';
 
 const adForm = document.querySelector('.ad-form');
@@ -53,14 +53,11 @@ function resetElements(elements) {
 
 function resetForm() {
   mapFiltersForm.reset();
-
   adForm.reset();
-
   marker.setLatLng({
     lat: 35.68950,
     lng: 139.69171,
   });
-
   adFormAddressInput.value = Object.values(marker._latlng).join(', ');
 }
 

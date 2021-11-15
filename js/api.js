@@ -1,9 +1,8 @@
-function getData(data, count) {
-  fetch('https://24.javascript.pages.academy/keksobooking/data')
+async function getData() {
+  const dataCards = await fetch('https://24.javascript.pages.academy/keksobooking/data')
     .then((response) => response.json())
-    .then((cards) => {
-      data = cards.slice(0, count);
-    });
+    .then((data) => data);
+  return dataCards;
 }
 
 function sendData(success, error, reset, body) {
@@ -16,14 +15,14 @@ function sendData(success, error, reset, body) {
   )
     .then((response) => {
       if (response.ok) {
-        reset;
-        success;
+        reset();
+        success();
       } else {
-        error;
+        error();
       }
     })
     .catch(() => {
-      error;
+      error();
     });
 }
 
