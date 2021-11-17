@@ -1,6 +1,7 @@
 import { setInactiveCondition, setActiveCondition, adFormAddressInput } from './form.js';
 import { generatePopupCard } from './popup.js';
 import { getData } from './api.js';
+import { startMapFiltersFormListener } from './filter.js';
 
 let OFFERS = [];
 const POPUP_CARDS_COUNT = 10;
@@ -11,7 +12,8 @@ const map = L.map('map')
   .on('load', async () => {
     setActiveCondition();
     await fetchOffers();
-    setPoints();
+    setPoints(OFFERS);
+    startMapFiltersFormListener();
   })
   .setView({
     lat: 35.68950,
@@ -53,6 +55,8 @@ async function fetchOffers() {
   OFFERS = offers.slice(0, POPUP_CARDS_COUNT);
 }
 
+const markerGroup = L.layerGroup().addTo(map);
+
 function addMarker(offer) {
   const regularPoint = {
     lat: offer.location.lat,
@@ -72,13 +76,13 @@ function addMarker(offer) {
     icon: regularMarkerIcon,
   });
 
-  regularMarker.addTo(map).bindPopup(generatePopupCard(offer));
+  regularMarker.addTo(markerGroup).bindPopup(generatePopupCard(offer));
 }
 
-function setPoints() {
-  OFFERS.forEach((offer) => {
+function setPoints(offers) {
+  offers.forEach((offer) => {
     addMarker(offer);
   });
 }
 
-export { marker };
+export { marker, setPoints, OFFERS, markerGroup };
