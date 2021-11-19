@@ -3,8 +3,8 @@ import { generatePopupCard } from './popup.js';
 import { getData } from './api.js';
 import { startMapFiltersFormListener } from './filter.js';
 
-let OFFERS = [];
 const POPUP_CARDS_COUNT = 10;
+let OFFERS = [];
 
 setInactiveCondition();
 

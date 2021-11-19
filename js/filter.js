@@ -1,14 +1,15 @@
 import { setPoints, OFFERS, markerGroup } from './map.js';
+import { debounce } from './debounce.js';
 
-const mapFiltersForm = document.querySelector('.map__filters');
-const mapFilterFeatures = mapFiltersForm.querySelectorAll('[name="features"]');
 const LOW_PRICE = 10000;
 const HIGH_PRICE = 50000;
+const mapFiltersForm = document.querySelector('.map__filters');
+const mapFilterFeatures = mapFiltersForm.querySelectorAll('[name="features"]');
 let arrayFeatures = [];
 let chosenFilters = [];
 
 function startMapFiltersFormListener() {
-  mapFiltersForm.addEventListener('change', onChangeForm);
+  mapFiltersForm.addEventListener('change', debounce(onChangeForm, 1000));
 }
 
 function onChangeForm(evt) {
@@ -35,6 +36,7 @@ function onChangeForm(evt) {
   }
 
   markerGroup.clearLayers();
+
   return setPoints(filterOffers(OFFERS));
 }
 
@@ -91,9 +93,8 @@ function getMapFiltersType(filterData, offers) {
       return true;
     } else if (filterData.value === 'any') {
       return true;
-    } else {
-      return false;
     }
+    return false;
   });
 }
 
@@ -113,9 +114,8 @@ function getMapFiltersPrice(filterData, offers) {
       }
     } else if (filterData.value === 'any') {
       return true;
-    } else {
-      return false;
     }
+    return false;
   });
 }
 
@@ -125,9 +125,8 @@ function getMapFiltersRooms(filterData, offers) {
       return true;
     } else if (filterData.value === 'any') {
       return true;
-    } else {
-      return false;
     }
+    return false;
   });
 }
 
@@ -137,9 +136,8 @@ function getMapFilterGuests(filterData, offers) {
       return true;
     } else if (filterData.value === 'any') {
       return true;
-    } else {
-      return false;
     }
+    return false;
   });
 }
 
@@ -148,7 +146,7 @@ function getMapFilterFeatures(filterData, offers) {
     const filtersValue = filterData.value;
 
     if (!offerItem.offer.features) {
-      return false;
+      return true;
     }
 
     const FilteredFeatures = filtersValue.every((value) => offerItem.offer.features.includes(value));

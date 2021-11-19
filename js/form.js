@@ -2,21 +2,6 @@ import { marker } from './map.js';
 import { showMessageSuccess, showMessageError } from './user-modal.js';
 import { sendData } from './api.js';
 
-const adForm = document.querySelector('.ad-form');
-const adFormFieldsets = adForm.querySelectorAll('fieldset');
-const adFormTitleInput = adForm.querySelector('#title');
-const adFormPriceInput = adForm.querySelector('#price');
-const adFormAddressInput = adForm.querySelector('#address');
-const adFormRoomsSelect = adForm.querySelector('#room_number');
-const adFormCapacitySelect = adForm.querySelector('#capacity');
-const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
-const adFormTypeSelect = adForm.querySelector('#type');
-const adFormTimeFieldset = adForm.querySelector('.ad-form__element--time');
-const adFormTimeinSelect = adForm.querySelector('#timein');
-const adFormTimeoutSelect = adForm.querySelector('#timeout');
-const adFormResetButton = adForm.querySelector('.ad-form__reset');
-const mapFiltersForm = document.querySelector('.map__filters');
-const mapFiltersFormChildren = mapFiltersForm.children;
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE_VALUE = 1000000;
@@ -38,16 +23,27 @@ const ARRAY_GUESTS = [
     value: '100',
   },
 ];
-
 const OBJ_ACCOMODATION_PRICES = { bungalow: 0, flat: 1000, hotel: 3000, house: 5000, palace: 10000 };
+const adForm = document.querySelector('.ad-form');
+const adFormTitleInput = adForm.querySelector('#title');
+const adFormPriceInput = adForm.querySelector('#price');
+const adFormAddressInput = adForm.querySelector('#address');
+const adFormRoomsSelect = adForm.querySelector('#room_number');
+const adFormCapacitySelect = adForm.querySelector('#capacity');
+const adFormCapacityOptions = adFormCapacitySelect.querySelectorAll('option');
+const adFormTypeSelect = adForm.querySelector('#type');
+const adFormTimeFieldset = adForm.querySelector('.ad-form__element--time');
+const adFormTimeinSelect = adForm.querySelector('#timein');
+const adFormTimeoutSelect = adForm.querySelector('#timeout');
+const adFormResetButton = adForm.querySelector('.ad-form__reset');
+const mapFiltersForm = document.querySelector('.map__filters');
 
 function resetElements(elements) {
   elements.forEach((element) => {
     if (!element.selected) {
       return element.remove();
-    } else {
-      return element;
     }
+    return element;
   });
 }
 
@@ -64,29 +60,13 @@ function resetForm() {
 function setInactiveCondition() {
   adForm.classList.add('ad-form--disabled');
 
-  for (let i = 0; i <= adFormFieldsets.length - 1; i++) {
-    adFormFieldsets[i].disabled = true;
-  }
-
   mapFiltersForm.classList.add('map__filters--disabled');
-
-  for (let i = 0; i <= mapFiltersFormChildren.length - 1; i++) {
-    mapFiltersFormChildren[i].disabled = true;
-  }
 }
 
 function setActiveCondition() {
   adForm.classList.remove('ad-form--disabled');
 
-  for (let i = 0; i <= adFormFieldsets.length - 1; i++) {
-    adFormFieldsets[i].disabled = false;
-  }
-
   mapFiltersForm.classList.remove('map__filters--disabled');
-
-  for (let i = 0; i <= mapFiltersFormChildren.length - 1; i++) {
-    mapFiltersFormChildren[i].disabled = false;
-  }
 }
 
 function showError(input, text) {
@@ -99,26 +79,34 @@ function resetError(input) {
   input.style.borderColor = '';
 }
 
-function checkErrorTitle() {
+adFormTitleInput.addEventListener('invalid', () => {
   if (adFormTitleInput.validity.valueMissing) {
     showError(adFormTitleInput, 'Введите заголовок объявления.');
-  } else if (adFormTitleInput.value.length < MIN_TITLE_LENGTH) {
+  } else {
+    resetError(adFormTitleInput);
+  }
+});
+
+adFormTitleInput.addEventListener('input', () => {
+  if (adFormTitleInput.value.length < MIN_TITLE_LENGTH) {
     showError(adFormTitleInput, `Введите еще ${MIN_TITLE_LENGTH - adFormTitleInput.value.length} симв.`);
   } else if (adFormTitleInput.value.length > MAX_TITLE_LENGTH) {
     showError(adFormTitleInput, `Удалите лишние ${adFormTitleInput.value.length - MAX_TITLE_LENGTH} симв.`);
   } else {
     resetError(adFormTitleInput);
   }
+});
 
-  adFormTitleInput.reportValidity('');
-}
-
-adFormTitleInput.addEventListener('blur', checkErrorTitle);
-
-function checkErrorPrice() {
+adFormPriceInput.addEventListener('invlaid', () => {
   if (adFormPriceInput.validity.valueMissing) {
     showError(adFormPriceInput, 'Вы должны ввести цену за ночь.');
-  } else if (adFormPriceInput.value.length > MAX_PRICE_VALUE) {
+  } else {
+    resetError(adFormPriceInput);
+  }
+});
+
+adFormPriceInput.addEventListener('input', () => {
+  if (adFormPriceInput.value.length > MAX_PRICE_VALUE) {
     showError(adFormPriceInput, `Значение должно быть меньше или равно ${MAX_PRICE_VALUE}`);
   }
   else if (adFormPriceInput.value.rangeUnderflow) {
@@ -127,11 +115,7 @@ function checkErrorPrice() {
   else {
     resetError(adFormPriceInput);
   }
-
-  adFormPriceInput.reportValidity('');
-}
-
-adFormPriceInput.addEventListener('blur', checkErrorPrice);
+});
 
 function setMinPrice(accomodation) {
   adFormPriceInput.min = OBJ_ACCOMODATION_PRICES[accomodation];
@@ -220,15 +204,10 @@ adFormRoomsSelect.addEventListener('change', getAppropriateGuests);
 
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  if (!adFormTitleInput.validity.valid) {
-    adFormTitleInput.addEventListener('invalid', checkErrorTitle);
-  } else if (!adFormPriceInput.validity.valid) {
-    adFormPriceInput.addEventListener('invalid', checkErrorPrice);
-  } else {
-    const formData = new FormData(evt.target);
 
-    sendData(showMessageSuccess, showMessageError, resetForm, formData);
-  }
+  const formData = new FormData(evt.target);
+
+  sendData(showMessageSuccess, showMessageError, resetForm, formData);
 });
 
 adFormResetButton.addEventListener('click', (evt) => {

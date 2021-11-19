@@ -27,4 +27,3 @@ function sendData(success, error, reset, body) {
 }
 
 export { getData, sendData };
-
